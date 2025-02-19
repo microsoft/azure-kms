@@ -1,7 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "build": "rollup --config && cp app.json dist/ && node build_bundle.js dist/",
+    "build-bing-ads": "rm -rf dist/ && rollup --config bing-ads/rollup.config.js  && cp bing-ads/app.json dist/ && node build_bundle.js dist/",
+    "build-conf-ai": "rm -rf dist/ && rollup --config conf-ai/rollup.config.js  && cp conf-ai/app.json dist/ && node build_bundle.js dist/",
     "bundle": "node build_bundle.js dist",
     "build-proto": "buf generate src/endpoints/proto",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",

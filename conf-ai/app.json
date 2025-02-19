@@ -1,0 +1,233 @@
+{
+  "endpoints": {
+    "/keyReleasePolicy": {
+      "get": {
+        "js_module": "endpoints/keyReleasePolicyEndpoint.js",
+        "js_function": "keyReleasePolicy",
+        "forwarding_required": "sometimes",
+        "authn_policies": ["member_cert", "jwt"],
+        "redirection_strategy": "none",
+        "mode": "readonly",
+        "openapi": {
+          "responses": {
+            "200": {
+              "description": "Key release policy",
+              "content": {
+                "application/json": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/settingsPolicy": {
+      "get": {
+        "js_module": "endpoints/settingsPolicyEndpoint.js",
+        "js_function": "settingsPolicy",
+        "forwarding_required": "sometimes",
+        "authn_policies": ["member_cert", "jwt"],
+        "mode": "readonly",
+        "openapi": {
+          "responses": {
+            "200": {
+              "description": "Settings policy",
+              "content": {
+                "application/json": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/listpubkeys": {
+      "get": {
+        "js_module": "inference/publickeyEndpoint.js",
+        "js_function": "listpubkeys",
+        "forwarding_required": "never",
+        "authn_policies": [],
+        "redirection_strategy": "none",
+        "mode": "readonly",
+        "openapi": {
+          "responses": {
+            "200": {
+              "description": "List of Public keys",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "properties": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/key": {
+      "post": {
+        "js_module": "inference/keyEndpoint.js",
+        "js_function": "key",
+        "forwarding_required": "never",
+        "authn_policies": [
+          "jwt"
+        ],
+        "redirection_strategy": "none",
+        "mode": "readonly",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "kid",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "fmt",
+            "required": false
+          }
+        ],
+        "openapi": {
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "attestation": {
+                      "type": "string"
+                    },
+                    "wrappingKey": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Return latest private key",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "properties": {
+                      "publicKey": {
+                        "type": "string"
+                      },
+                      "privateKey": {
+                        "type": "string"
+                      },
+                      "kid": {
+                        "type": "string"
+                      },
+                      "keyType": {
+                        "type": "string"
+                      },
+                      "receipt": {
+                        "type": "string"
+                      },
+                      "timeStamp": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "publicKey",
+                      "privateKey",
+                      "kid",
+                      "keyType",
+                      "timeStamp"
+                    ],
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/refresh": {
+      "post": {
+        "js_module": "inference/refreshEndpoint.js",
+        "js_function": "refresh",
+        "forwarding_required": "always",
+        "authn_policies": [],
+        "redirection_strategy": "to_primary",
+        "mode": "readwrite",
+        "openapi": {
+          "responses": {
+            "200": {
+              "description": "Generate new key item",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "properties": {
+                      "publicKey": {
+                        "type": "string"
+                      },
+                      "kid": {
+                        "type": "string"
+                      },
+                      "keyType": {
+                        "type": "string"
+                      },
+                      "timeStamp": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "publicKey",
+                      "kid",
+                      "keyType",
+                      "timeStamp"
+                    ],
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth": {
+      "get": {
+        "js_module": "endpoints/kms.js",
+        "js_function": "auth",
+        "forwarding_required": "never",
+        "authn_policies": ["user_cert", "member_cert", "jwt"],
+        "mode": "readonly",
+        "openapi": {
+          "responses": {
+            "200": {
+              "description": "Generate an auth response"
+            }
+          }
+        }
+      }
+    },
+    "/heartbeat": {
+      "get": {
+        "js_module": "endpoints/kms.js",
+        "js_function": "heartbeat",
+        "forwarding_required": "never",
+        "authn_policies": [],
+        "redirection_strategy": "none",
+        "mode": "readonly",
+        "openapi": {
+          "responses": {
+            "200": {
+              "description": "Generate a heartbeat response"
+            }
+          }
+        }
+      }
+    }
+  }
+}

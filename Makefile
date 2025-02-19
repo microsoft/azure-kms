@@ -32,11 +32,15 @@ endif
 help: ## 💬 This help message :)
 	@grep -E '[a-zA-Z_-]+:.*?## .*$$' $(firstword $(MAKEFILE_LIST)) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-22s\033[0m %s\n", $$1, $$2}'
 
-build: ## 🔨 Build the Application
+build-bing-ads: ## 🔨 Build the Application
 	@echo -e "\e[34m$@\e[0m" || true;
 	./scripts/set_python_env.sh
-	npm install
-	npm run build
+	(npm install && npm run build-bing-ads)
+
+build-conf-ai: ## 🔨 Build the Application
+	@echo -e "\e[34m$@\e[0m" || true;
+	./scripts/set_python_env.sh
+	(npm install && npm run build-conf-ai)
 
 setup: ## Setup proposals and generate an initial key
 	@echo -e "\e[34m$@\e[0m" || true

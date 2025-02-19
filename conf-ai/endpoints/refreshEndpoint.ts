@@ -4,11 +4,12 @@
 import * as ccfapp from "@microsoft/ccf-app";
 import { ServiceResult } from "../../common/index";
 import { IKeyItem } from "../../common/index";
-import { hpkeKeyIdMap, hpkeKeysMap } from "../../common/index";
+import { hpkeKeyMap } from "./repositories/Maps";
 import { KeyGeneration } from "./KeyGeneration";
 import { enableEndpoint } from "../../common/index";
 import { ServiceRequest } from "../../common/index";
-import { LogContext, Logger } from "../../common/index";
+import { Logger, LogContext } from "../../common/index";
+import { OhttpPublicKey } from "./OhttpPublicKey";
 
 // Enable the endpoint
 enableEndpoint();
@@ -22,9 +23,7 @@ enableEndpoint();
 export const refresh = (
   request: ccfapp.Request<void>,
 ): ServiceResult<string | IKeyItem> => {
-  const name = "refresh";
-  const logContext = new LogContext().appendScope(name);
-
+  const logContext = new LogContext().appendScope("refreshEndpoint");
   const serviceRequest = new ServiceRequest<void>(logContext, request);
 
   // check if caller has a valid identity
@@ -33,25 +32,25 @@ export const refresh = (
 
   try {
     // Get HPKE key pair id
-    const id = hpkeKeyIdMap.size + 1;
+    const id = (hpkeKeyMap.size + 1) % 256;
 
-    // since OHTTP is limited to 2 char ids, we can only have ids from 10 to 99
-    // So the current logic is to have ids rotate from 10 to 99
-    const keyItem: IKeyItem = KeyGeneration.generateKeyItem(id % 90 + 10);
+    // Generate HPKE key pair with the id
+    const keyItem = KeyGeneration.generateKeyItem(id);
+    Logger.info(`Key generated with id ${id}`, logContext, keyItem);
 
-    // Store HPKE key pair kid
-    keyItem.kid = `${keyItem.kid!}_${id}`;
-    hpkeKeyIdMap.storeItem(id, keyItem.kid);
+    // Get claim for receipt
+    const claim: string = new OhttpPublicKey(keyItem, logContext).get();
+    Logger.info(`Claim generated for receipt: `, logContext, claim);
 
-    // Store HPKE key pair
-    hpkeKeysMap.storeItem(keyItem.kid, keyItem, keyItem.x);
-    Logger.info(`Key item with id ${id} and kid ${keyItem.kid} stored`);
+    // Store HPKE key pair using kid
+    keyItem.kid = `${keyItem.kid!}`;
+    hpkeKeyMap.storeItem(id, keyItem, claim);
+    Logger.info(`Key item with id ${id} and kid ${keyItem.kid} stored`, logContext);
 
     delete keyItem.d;
-    const ret = keyItem;
-    return ServiceResult.Succeeded<IKeyItem>(ret, logContext);
+    return ServiceResult.Succeeded<IKeyItem>(keyItem, logContext);
   } catch (exception: any) {
-    const errorMessage = `${name}: Error: ${exception.message}`;
+    const errorMessage = `${logContext.getBaseScope()}: Error: ${exception.message}`;
     console.error(errorMessage);
     return ServiceResult.Failed<string>({ errorMessage }, 500, logContext);
   }

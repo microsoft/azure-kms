@@ -2,6 +2,9 @@ export * from "./attestation/AttestationValidation";
 export * from "./attestation/ISnpAttestation";
 export * from "./attestation/ISnpAttestationReport";
 export * from "./attestation/SnpAttestationClaims";
+export * from "./attestation/IMaaAttestationReport";
+export * from "./attestation/MaaAttestationClaims";
+export * from "./attestation/MaaAttestationValidation";
 
 export * from "./authorization/AuthenticationService";
 export * from "./authorization/IAuthenticationService";
@@ -25,3 +28,5 @@ export * from "./utils/ServiceRequest";
 export * from "./utils/Tooling";
 export * from "./utils/KmsError";
 export * from "./utils/Logger";
+export * from "./utils/MaaWrapping";
+
