@@ -1,0 +1,8 @@
+services:
+  kms:
+    network_mode: host
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+      args:
+        - CCF_PLATFORM=${CCF_PLATFORM:-virtual}
