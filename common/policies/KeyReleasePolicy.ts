@@ -5,9 +5,9 @@ import * as ccfapp from "@microsoft/ccf-app";
 import { ccf } from "@microsoft/ccf-app/global";
 import { IKeyReleasePolicy, KeyReleasePolicyType } from "./IKeyReleasePolicy";
 import { IKeyReleasePolicySnpProps } from "./IKeyReleasePolicySnpProps";
-import { Logger, LogContext } from "../../common/index";
-import { ServiceResult } from "../../common/index";
-import { IAttestationReport } from "../../common/index";
+import { Logger, LogContext } from "../utils/Logger";
+import { ServiceResult } from "../utils/ServiceResult";
+import { IAttestationReport } from "../attestation/ISnpAttestationReport";
 import { KmsError } from "../utils/KmsError";
 
 export class KeyReleasePolicy implements IKeyReleasePolicy {
@@ -15,7 +15,21 @@ export class KeyReleasePolicy implements IKeyReleasePolicy {
   public claims = {
     "x-ms-attestation-type": ["snp"],
   };
-
+  //This helper method flattens the object to a single level
+  private static flattenObject(obj: Record<string, any>): Record<string, any> {
+    const res: Record<string, any> = {};
+    for (const k in obj) {
+        if (typeof obj[k] === "object" && obj[k] !== null) {
+            const sub = KeyReleasePolicy.flattenObject(obj[k]);
+            for (const j in sub) {
+                res[`${k}.${j}`] = sub[j];
+            }
+        } else {
+            res[k] = obj[k];
+        }
+    }
+    return res;
+  }
   private static validateKeyReleasePolicyClaims(
     keyReleasePolicyClaims: IKeyReleasePolicySnpProps,
     attestationClaims: IAttestationReport,
@@ -209,6 +223,8 @@ export class KeyReleasePolicy implements IKeyReleasePolicy {
         logContext,
       );
     }
+    // Flatten the attestationClaims
+    attestationClaims= KeyReleasePolicy.flattenObject(attestationClaims);
 
     // Check claims
     let policyValidationResult =
@@ -232,6 +248,10 @@ export class KeyReleasePolicy implements IKeyReleasePolicy {
           logContext
         );
     }
+    if (!policyValidationResult.success) {
+      return policyValidationResult;
+    }
+
     if (keyReleasePolicy.gt !== null && keyReleasePolicy.gt !== undefined) {
       Logger.debug(`Validating gt operator`, logContext, keyReleasePolicy.gt);
       policyValidationResult =
@@ -269,9 +289,10 @@ export class KeyReleasePolicy implements IKeyReleasePolicy {
       const kvKey = kv.kvkey;
       const kvKeyBuf = ccf.strToBuf(kvKey);
       const kvValueBuf = keyReleasePolicyMap.get(kvKeyBuf);
+      Logger.debug(`Retrieved key release policy ${kvKey} from map: `, logContext, kvValueBuf ? ccf.bufToStr(kvValueBuf): "undefined");
       if (!kvValueBuf) {
         if (!kv.optional) {
-          throw new KmsError(`Key release policy ${kvKey} not found in the key release policy map`, logContext);        }
+          throw new KmsError(`Key release policy '${kvKey}' not found in the key release policy map`, logContext);        }
       } else {
         let kvValue = ccf.bufToStr(kvValueBuf!);
         try {

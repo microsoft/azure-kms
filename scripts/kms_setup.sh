@@ -62,6 +62,10 @@ service_cert="$certificate_dir/service_cert.pem"
 signing_cert="$certificate_dir/member0_cert.pem"
 signing_key="$certificate_dir/member0_privk.pem"
 
+# Set constitution
+source .venv_ccf_sandbox/bin/activate
+make set-constitution
+
 # Add settings policy
 source .venv_ccf_sandbox/bin/activate
 make propose-settings-policy
@@ -74,6 +78,9 @@ make propose-jwt-demo-validation-policy
 
 # Add AAD validation policy
 make propose-jwt-ms-validation-policy
+
+# Add MAA validation policy
+make propose-jwt-maa-validation-policy
 
 # Generate a new key item
 curl ${network_url}/app/refresh -X POST --cacert $service_cert -H "Content-Type: application/json" -i  -w '\n'

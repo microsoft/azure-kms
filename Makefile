@@ -117,6 +117,11 @@ propose-jwt-ms-validation-policy: ## 🚀 Propose the AAD as idp
 	@echo -e "\e[34m$@\e[0m" || true
 	@CCF_PLATFORM=${CCF_PLATFORM} ./scripts/submit_proposal.sh --network-url "${KMS_URL}" --proposal-file ./governance/jwt/set_jwt_ms_validation_policy_proposal.json --certificate_dir "${KEYS_DIR}" --member-count ${MEMBER_COUNT}
 
+# Propose a new MAA idp
+propose-jwt-maa-validation-policy: ## 🚀 Propose the MAA as idp
+	@echo -e "\e[34m$@\e[0m" || true
+	@CCF_PLATFORM=${CCF_PLATFORM} ./scripts/submit_proposal.sh --network-url "${KMS_URL}" --proposal-file ./governance/jwt/set_jwt_maa_validation_policy_proposal.json --certificate_dir "${KEYS_DIR}" --member-count ${MEMBER_COUNT}
+
 # Propose a new settings policy
 propose-settings-policy: ## 🚀 Deploy the settings policy
 	@echo -e "\e[34m$@\e[0m" || true
@@ -125,12 +130,12 @@ propose-settings-policy: ## 🚀 Deploy the settings policy
 # Propose a new key release policy
 propose-add-key-release-policy: ## 🚀 Deploy the add claim key release policy to the sandbox or mCCF
 	@echo -e "\e[34m$@\e[0m" || true
-	@CCF_PLATFORM=${CCF_PLATFORM} ./scripts/submit_proposal.sh --network-url "${KMS_URL}" --proposal-file ./governance/policies/key-release-policy-add.json --certificate_dir "${KEYS_DIR}" --member-count ${MEMBER_COUNT}
+	@CCF_PLATFORM=${CCF_PLATFORM} ./scripts/submit_proposal.sh --network-url "${KMS_URL}" --proposal-file ./$(BUILD_TAG)/governance/policies/key-release-policy-add.json --certificate_dir "${KEYS_DIR}" --member-count ${MEMBER_COUNT}
 
 propose-rm-key-release-policy: ## 🚀 Deploy the remove claim key release policy to the sandbox or mCCF
 	@echo -e "\e[34m$@\e[0m" || true
 	$(call check_defined, KMS_URL)
-	@CCF_PLATFORM=${CCF_PLATFORM} ./scripts/submit_proposal.sh --network-url "${KMS_URL}" --proposal-file ./governance/policies/key-release-policy-remove.json --certificate_dir "${KEYS_DIR}"
+	@CCF_PLATFORM=${CCF_PLATFORM} ./scripts/submit_proposal.sh --network-url "${KMS_URL}" --proposal-file ./$(BUILD_TAG)/governance/policies/key-release-policy-remove.json --certificate_dir "${KEYS_DIR}"
 
 propose-key-rotation-policy: ## 🚀 Deploy the key rotation policy to the sandbox or mCCF
 	@echo -e "\e[34m$@\e[0m" || true
