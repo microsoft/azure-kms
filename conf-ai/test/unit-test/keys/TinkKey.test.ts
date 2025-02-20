@@ -4,7 +4,7 @@
 // Use the CCF polyfill to mock-up all key-value map functionality for unit-test
 import "@microsoft/ccf-app/polyfill.js";
 import { describe, expect, test } from "@jest/globals";
-import { ITinkKeySet, KeyGeneration, TinkKey } from "../../../index";
+import { ITinkKeySet, KeyGeneration, TinkKey } from "../../../../bing-ads/index";
 
 describe("Construct a new tink key set", () => {
   test("Should create a tink key successfully", () => {

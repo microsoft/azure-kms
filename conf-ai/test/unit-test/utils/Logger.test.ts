@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
-import { Logger, LogLevel, LogContext } from "../../../../common/index";
+import { Logger, LogLevel, LogContext } from "../../../../common/utils/Logger";
 
 describe("Logger", () => {
   beforeEach(() => {

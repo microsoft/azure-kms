@@ -4,9 +4,9 @@
 // Use the CCF polyfill to mock-up all key-value map functionality for unit-test
 import "@microsoft/ccf-app/polyfill.js";
 import { describe, expect, jest, test } from "@jest/globals";
-import { Settings } from "../../../../common/index";
-import { LogContext, Logger, LogLevel } from "../../../../common/index";
-import { ServiceRequest } from "../../../../common/index";
+import { Settings } from "../../../../common/policies/Settings";
+import { LogContext, Logger, LogLevel } from "../../../../common/utils/Logger";
+import { ServiceRequest } from "../../../../common/utils/ServiceRequest";
 
 interface Request {
     headers: {
@@ -74,15 +74,13 @@ describe("Test ServiceRequest properties", () => {
         }));
         settingsPolicyMap.set("settings_policy", settingsPolicyValue);
 
-
         // Mock Logger.debug
         const debugSpy = jest.spyOn(console, "log").mockImplementation(() => true);
-
-
 
         // Act
         const serviceRequest =
             new ServiceRequest<void>(logContext, <any>request);
+        // Dump all messages received by debugSpy
         console.dir(debugSpy.mock.calls, { depth: null });
 
         // Assert
@@ -128,7 +126,9 @@ describe("Test ServiceRequest properties", () => {
             '  "route": "/app/key",\n' +
             '  "url": "/app/key",\n' +
             '  "params": {},\n' +
-            '  "body": {}\n' +
+            '  "body": {\n' +
+            '    "key": "value"\n' +
+            '  }\n' +
             '}';
         expect(debugSpy).toHaveBeenCalledWith(expectedLogMessageWithoutBearer);
 

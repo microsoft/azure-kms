@@ -4,8 +4,8 @@
 // Use the CCF polyfill to mock-up all key-value map functionality for unit-test
 import "@microsoft/ccf-app/polyfill.js";
 import { describe, expect, jest, test } from "@jest/globals";
-import { ISettings, Settings } from "../../../../common/index";
-import { LogContext, Logger, LogLevel } from "../../../../common/index";
+import { ISettings, Settings } from "../../../../common/policies/Settings";
+import { LogContext, Logger, LogLevel } from "../../../../common/utils/Logger";
 
 describe("Test Settings Policy properties", () => {
 

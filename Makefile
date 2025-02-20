@@ -59,10 +59,6 @@ build-conf-ai: ## 🔨 Build the Application
 	./scripts/set_python_env.sh
 	(npm install && npm run build-conf-ai)
 
-e2e-test: build ## 🔍 Run the E2E tests
-	@echo -e "\e[34m$@\e[0m" || true
-	@CCF_PLATFORM=${CCF_PLATFORM} npm run e2e-test-$(BUILD_TAG)
-
 setup: ## Setup proposals and generate an initial key
 	@echo -e "\e[34m$@\e[0m" || true
 	CCF_PLATFORM=${CCF_PLATFORM} ./scripts/kms_setup.sh --network-url "${KMS_URL}"  --certificate_dir "${KEYS_DIR}"
@@ -243,7 +239,11 @@ test-unit:
 	npm run test
 
 test-system:
-	@pytest -s test/system-test/$(filter-out $@,$(MAKECMDGOALS))
+	@pytest -s $(BUILD_TAG)/test/system-test/$(filter-out $@,$(MAKECMDGOALS))
+
+test-e2e: build ## 🔍 Run the E2E tests
+	@echo -e "\e[34m$@\e[0m" || true
+	@CCF_PLATFORM=${CCF_PLATFORM} npm run e2e-test-$(BUILD_TAG)
 
 # Keep this at the bottom.
 clean: ## 🧹 Clean the working folders created during build/demo

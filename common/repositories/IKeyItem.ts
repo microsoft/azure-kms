@@ -5,10 +5,6 @@ import {
   CryptoKeyPair,
   JsonWebKeyEdDSAPublic,
 } from "@microsoft/ccf-app/global";
-import { enableEndpoint } from "../../common/index";
-
-// Enable the endpoint
-enableEndpoint();
 
 // Define the interface for storing keys
 export interface IKeyItem extends JsonWebKeyEdDSAPublic {

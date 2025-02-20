@@ -2,8 +2,8 @@
 // Licensed under the MIT license.
 
 import { describe, expect, test } from "@jest/globals";
-import { KmsError } from "../../../../common/index";
-import { LogContext } from "../../../../common/index";
+import { KmsError } from "../../../../common/utils/KmsError";
+import { LogContext } from "../../../../common/utils/Logger";
 
 describe("KmsError", () => {
   test("should create an error with a message only", () => {

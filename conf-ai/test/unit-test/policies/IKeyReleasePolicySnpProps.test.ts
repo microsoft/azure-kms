@@ -4,10 +4,9 @@
 // Use the CCF polyfill to mock-up all key-value map functionality for unit-test
 import "@microsoft/ccf-app/polyfill.js";
 import { beforeAll, describe, expect, test } from "@jest/globals";
-import { KeyReleasePolicy } from "../../../../common/index";
-import { Logger, LogLevel } from "../../../../common/index";
-import { IKeyReleasePolicySnpProps } from "../../../../common/index";
-import { IAttestationReport } from "../../../../common/index";
+import { IAttestationReport, KeyReleasePolicy } from "../../../../common/index";
+import { Logger, LogLevel } from "../../../../common/utils/Logger";
+import { IKeyReleasePolicySnpProps } from "../../../../bing-ads/index";
 import {
   IKeyReleasePolicy,
   KeyReleasePolicyType,

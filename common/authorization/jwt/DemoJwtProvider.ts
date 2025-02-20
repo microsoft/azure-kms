@@ -5,7 +5,8 @@ import * as ccfapp from "@microsoft/ccf-app";
 import { ServiceResult } from "../../../common/index";
 import { IJwtIdentityProvider } from "./IJwtIdentityProvider";
 import { authorizeJwt } from "./MsJwtProvider";
-import { Logger, LogContext } from "../../../common/index";
+import { Logger } from "../../../common/index";
+import { LogContext } from "../../../common/utils/Logger";
 
 const errorType = "AuthenticationError";
 
