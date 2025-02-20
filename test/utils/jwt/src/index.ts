@@ -6,14 +6,35 @@ import jwt from "jsonwebtoken";
 import fs from "fs";
 import { Request, Response } from "express";
 import * as Keys from "./keys";
+import * as Proposals from "./proposals";
 
+fs.readdir('/', (err, files) => {
+  if (err) {
+    console.error('Error reading directory:', err);
+  } else {
+    console.log('Files in root directory:', files);
+  }
+});
+
+const proposalsPath = `${process.env.KMS_WORKSPACE}/proposals`;
 const privateKeyPath = `${process.env.KMS_WORKSPACE}/private.pem`;
 const certificatePath = `${process.env.KMS_WORKSPACE}/cert.pem`;
 const kid = "Demo IDP kid";
+const hostPort = 3000;
+const host = `http://localhost:${hostPort}`;
 const iss = "http://Demo-jwt-issuer";
 const sub = "c0d8e9a7-6b8e-4e1f-9e4a-3b2c1d0f5a6b";
 const name = "Cool caller";
 const expiry = 1000;
+const wrappingKeyPath = `/app/publicWrapKey.pem`;
+
+const createProposalsFolder = async (): Promise<void> => {
+  console.log(`Create proposals path: ${proposalsPath}`);
+  // make sure the proposals folder exists.
+  await fs.promises
+    .mkdir(proposalsPath, { recursive: true })
+    .catch(console.error);
+};
 
 (async () => {
   // Generate private key and proposals if needed
@@ -21,12 +42,32 @@ const expiry = 1000;
   if (!fs.existsSync(privateKeyPath)) {
     console.log(`Generate IDP private key path: ${privateKeyPath}`);
     await Keys.generate(privateKeyPath, certificatePath);
+
+    // Create folders
+    await createProposalsFolder();
+
+    // generate issuer proposal
+    await Proposals.issuerProposal(host, proposalsPath);
+
+    // generate issuer configuration used in sandbox
+    await Proposals.issuerConfiguration(
+      privateKeyPath,
+      certificatePath,
+      proposalsPath,
+      kid,
+    );
   }
 })();
 
 const app = express();
 let privateKey = fs.readFileSync(privateKeyPath);
+console.log(`Wrapping key path: ${wrappingKeyPath}`);
+const wrappingKey: any = Keys.getJwksFromPem(wrappingKeyPath, "TpmEphemeralEncryptionKey");
+
 const token = (req: Request, res: Response) => {
+  // Extract query parameters
+  console.log("Query: ", req.query);
+
   const payload = {
     iss,
     sub,
@@ -34,7 +75,28 @@ const token = (req: Request, res: Response) => {
     nbf: Math.floor(Date.now() / 1000),
     iat: Math.floor(Date.now() / 1000),
     exp: Math.floor(Date.now() / 1000) + 60 * 60, // expires in 1 hour
+    "x-ms-ver": "1.0",
+    "x-ms-azurevm-debuggersdisabled": true,
+    "x-ms-azurevm-osversion-major": 22,
+    "x-ms-azurevm-os-provisioning": {
+      "node-policy-identity": {
+        "eventVersion": "1",
+        "policyId": "openai-whisper",
+        "signer": "8fe6e7a314b8695b21710cebf0265e8d7bbaabde26f431c407faf16fcbd6b924",
+        "svn": "1"
+      },
+      "os-image-identity": {
+        "diskId": "singularity.ubuntu-22.04",
+        "eventVersion": "1",
+        "signer": "f9cce5b7bdc2aaacfc4c78cb2b7515459aded8149287b74667bb2f178b0cf7b9",
+        "svn": "1"
+      }
+    },
+    "x-ms-runtime": { "keys": [wrappingKey] },
+    ...req.query, // Merge query parameters into the payload
   };
+
+  console.log(`Payload: `, payload);
 
   const access_token = jwt.sign(payload, privateKey, {
     algorithm: "RS256",
@@ -47,7 +109,7 @@ const token = (req: Request, res: Response) => {
   });
 };
 
-// Use POST simular as AAD. No body required.
+// Use POST similar as AAD. No body required.
 app.post("/token", token);
 
 // Endpoint for managed identities.

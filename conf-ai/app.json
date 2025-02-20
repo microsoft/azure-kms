@@ -45,7 +45,7 @@
     },
     "/listpubkeys": {
       "get": {
-        "js_module": "inference/publickeyEndpoint.js",
+        "js_module": "conf-ai/endpoints/publickeyEndpoint.js",
         "js_function": "listpubkeys",
         "forwarding_required": "never",
         "authn_policies": [],
@@ -71,7 +71,7 @@
     },
     "/key": {
       "post": {
-        "js_module": "inference/keyEndpoint.js",
+        "js_module": "conf-ai/endpoints/keyEndpoint.js",
         "js_function": "key",
         "forwarding_required": "never",
         "authn_policies": [
@@ -154,7 +154,7 @@
     },
     "/refresh": {
       "post": {
-        "js_module": "inference/refreshEndpoint.js",
+        "js_module": "conf-ai/endpoints/refreshEndpoint.js",
         "js_function": "refresh",
         "forwarding_required": "always",
         "authn_policies": [],
