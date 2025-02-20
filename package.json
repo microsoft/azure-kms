@@ -6,7 +6,8 @@
     "bundle": "node build_bundle.js dist",
     "build-proto": "buf generate src/endpoints/proto",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "e2e-test": "node --loader ts-node/esm ./test/e2e-test/src/index.ts"
+    "e2e-test-bing-ads": "node --loader ts-node/esm ./bing-ads/test/e2e-test/src/index.ts",
+    "e2e-test-conf-ai": "node --loader ts-node/esm ./conf-ai/test/e2e-test/src/index.ts"
   },
   "type": "module",
   "engines": {

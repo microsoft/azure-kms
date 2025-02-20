@@ -2,7 +2,7 @@
   "endpoints": {
     "/keyReleasePolicy": {
       "get": {
-        "js_module": "endpoints/keyReleasePolicyEndpoint.js",
+        "js_module": "bing-ads/endpoints/keyReleasePolicyEndpoint.js",
         "js_function": "keyReleasePolicy",
         "forwarding_required": "sometimes",
         "redirection_strategy": "none",
@@ -24,7 +24,7 @@
     },
     "/settingsPolicy": {
       "get": {
-        "js_module": "endpoints/settingsPolicyEndpoint.js",
+        "js_module": "bing-ads/endpoints/settingsPolicyEndpoint.js",
         "js_function": "settingsPolicy",
         "forwarding_required": "sometimes",
         "redirection_strategy": "none",
@@ -46,7 +46,7 @@
     },
     "/pubkey": {
       "get": {
-        "js_module": "endpoints/publickeyEndpoint.js",
+        "js_module": "bing-ads/endpoints/publickeyEndpoint.js",
         "js_function": "pubkey",
         "forwarding_required": "sometimes",
         "redirection_strategy": "none",
@@ -100,7 +100,7 @@
     },
     "/listpubkeys": {
       "get": {
-        "js_module": "endpoints/publickeyEndpoint.js",
+        "js_module": "bing-ads/endpoints/publickeyEndpoint.js",
         "js_function": "listpubkeys",
         "forwarding_required": "sometimes",
         "redirection_strategy": "none",
@@ -126,7 +126,7 @@
     },
     "/unwrapKey": {
       "post": {
-        "js_module": "endpoints/keyEndpoint.js",
+        "js_module": "bing-ads/endpoints/keyEndpoint.js",
         "js_function": "unwrapKey",
         "forwarding_required": "sometimes",
         "redirection_strategy": "none",
@@ -194,7 +194,7 @@
     },
     "/key": {
       "post": {
-        "js_module": "endpoints/keyEndpoint.js",
+        "js_module": "bing-ads/endpoints/keyEndpoint.js",
         "js_function": "key",
         "forwarding_required": "sometimes",
         "redirection_strategy": "none",
@@ -275,7 +275,7 @@
     },
     "/refresh": {
       "post": {
-        "js_module": "endpoints/refreshEndpoint.js",
+        "js_module": "bing-ads/endpoints/refreshEndpoint.js",
         "js_function": "refresh",
         "forwarding_required": "always",
         "authn_policies": [],
@@ -313,7 +313,7 @@
     },
     "/auth": {
       "get": {
-        "js_module": "endpoints/kms.js",
+        "js_module": "bing-ads/endpoints/kms.js",
         "js_function": "auth",
         "forwarding_required": "never",
         "redirection_strategy": "none",
@@ -330,7 +330,7 @@
     },
     "/heartbeat": {
       "get": {
-        "js_module": "endpoints/kms.js",
+        "js_module": "bing-ads/endpoints/kms.js",
         "js_function": "heartbeat",
         "forwarding_required": "sometimes",
         "redirection_strategy": "none",

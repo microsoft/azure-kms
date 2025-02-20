@@ -13,3 +13,4 @@ aad.env
 *.log
 temp*/
 __pycache__/
+.build_tag

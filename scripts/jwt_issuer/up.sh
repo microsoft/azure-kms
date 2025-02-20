@@ -4,9 +4,10 @@
 # Licensed under the MIT license.
 
 jwt-issuer-up() {
-    set -e
+    set -ex
 
     REPO_ROOT="$(realpath "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../..")"
+    echo $REPO_ROOT
     export JWT_ISSUER_WORKSPACE=${JWT_ISSUER_WORKSPACE:-$REPO_ROOT/jwt_issuers_workspace/${UNIQUE_ID:-default}/}
     mkdir -p $JWT_ISSUER_WORKSPACE
 

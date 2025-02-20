@@ -19,7 +19,15 @@ The scripts needed for running system tests need to move because of changes in A
 ### Docker
 We should try to keep docker files the same
 
+### governance
+All except custom constitutions
+
+## .build_tag
+On a new setup we need to run make build-bing-ads or make build-conf-ai.
+After the initial build, make build will consistently use the tag in .build_tag
 
 ## Open issues
 Circular dependencies during build
 Common endpoints
+Common code for tests
+use the different governance files

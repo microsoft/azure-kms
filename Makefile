@@ -9,6 +9,7 @@ CCF_PLATFORM ?= virtual
 JWT_ISSUER_WORKSPACE ?= ${PWD}/jwt_issuer_workspace
 
 DEPLOYMENT_ENV ?= $(if $(shell echo $(KMS_URL) | grep -E '127.0.0.1|localhost'),local,cloud)
+BUILD_TAG ?= $(shell cat .build_tag 2>/dev/null)
 
 ifndef MEMBER_COUNT
 ifeq ($(findstring https://127.0.0.1,$(KMS_URL)),https://127.0.0.1)
@@ -32,15 +33,35 @@ endif
 help: ## 💬 This help message :)
 	@grep -E '[a-zA-Z_-]+:.*?## .*$$' $(firstword $(MAKEFILE_LIST)) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-22s\033[0m %s\n", $$1, $$2}'
 
+build:
+	@if [ -f .build_tag ]; then \
+		BUILD_TAG=$$(cat .build_tag); \
+		echo "Using BUILD_TAG=$$BUILD_TAG"; \
+		make build-$$BUILD_TAG; \
+	else \
+		echo "BUILD_TAG not set. Please run 'make build-bing-ads' or 'make build-conf-ai' first."; \
+		exit 1; \
+	fi
+
+build-bing-ads: export BUILD_TAG=bing-ads
 build-bing-ads: ## 🔨 Build the Application
 	@echo -e "\e[34m$@\e[0m" || true;
+	@echo "Setting BUILD_TAG=bing-ads"
+	echo "bing-ads" > .build_tag
 	./scripts/set_python_env.sh
 	(npm install && npm run build-bing-ads)
 
+build-conf-ai: export BUILD_TAG=conf-ai
 build-conf-ai: ## 🔨 Build the Application
 	@echo -e "\e[34m$@\e[0m" || true;
+	@echo "Setting BUILD_TAG=conf-ai"
+	echo "conf-ai" > .build_tag
 	./scripts/set_python_env.sh
 	(npm install && npm run build-conf-ai)
+
+e2e-test: build ## 🔍 Run the E2E tests
+	@echo -e "\e[34m$@\e[0m" || true
+	@CCF_PLATFORM=${CCF_PLATFORM} npm run e2e-test-$(BUILD_TAG)
 
 setup: ## Setup proposals and generate an initial key
 	@echo -e "\e[34m$@\e[0m" || true
@@ -68,8 +89,8 @@ start-host: stop-host  ## 🏃 Start the CCF network using Sandbox.sh
 	MEMBER_COUNT=${MEMBER_COUNT} source ./scripts/ccf/sandbox_local/up.sh --build && \
 	source ./scripts/kms/js_app_set.sh && \
 	source ./scripts/kms/constitution_set.sh \
-		--resolve ./governance/constitution/resolve/auto_accept.js \
-		--actions ./governance/constitution/actions/kms.js
+		--resolve ./$(BUILD_TAG)/governance/constitution/resolve/auto_accept.js \
+		--actions ./$(BUILD_TAG)/governance/constitution/actions/kms.js
 
 start-host-idp: stop-host stop-idp build ## 🏃 Start the CCF network && idp using Sandbox.sh
 	@echo -e "\e[34m$@\e[0m" || true
@@ -77,14 +98,14 @@ start-host-idp: stop-host stop-idp build ## 🏃 Start the CCF network && idp us
 	MEMBER_COUNT=${MEMBER_COUNT} source ./scripts/ccf/sandbox_local/up.sh --build && \
 	source ./scripts/jwt_issuer/up.sh --build && \
 	source ./scripts/kms/constitution_set.sh \
-		--resolve ./governance/constitution/resolve/auto_accept.js \
-		--actions ./governance/constitution/actions/kms.js && \
+		--resolve ./$(BUILD_TAG)/governance/constitution/resolve/auto_accept.js \
+		--actions ./$(BUILD_TAG)/governance/constitution/actions/kms.js && \
 	source scripts/kms/jwt_issuer_trust.sh && \
 	source scripts/kms/js_app_set.sh
 
 demo: stop-all start-host-idp ## 🎬 Demo the KMS Application in the Sandbox
 	@echo -e "\e[34m$@\e[0m" || true
-	@CCF_PLATFORM=${CCF_PLATFORM} ./scripts/test_sandbox.sh --nodeAddress 127.0.0.1:8000 --certificate_dir ${KMS_WORKSPACE}/sandbox_common --constitution ./governance/constitution/actions/kms.js
+	@CCF_PLATFORM=${CCF_PLATFORM} ./scripts/test_sandbox.sh --nodeAddress 127.0.0.1:8000 --certificate_dir ${KMS_WORKSPACE}/sandbox_common --constitution ./$(BUILD_TAG)/governance/constitution/actions/kms.js
 
 # Propose the JWT validation policy
 propose-jwt-demo-validation-policy: ## 🚀 Deploy the JWT validation policy
@@ -130,7 +151,7 @@ set-constitution: start-host-idp ## Set new custom constitution
 		@sleep 5; \
 		cp -r ${KMS_WORKSPACE}/sandbox_common/*.js ${KEYS_DIR}; \
 	fi
-	@CCF_PLATFORM=${CCF_PLATFORM} ./scripts/submit_constitution.sh --network-url "${KMS_URL}" --certificate-dir "${KEYS_DIR}" --custom-constitution ./governance/constitution/actions/kms.js --member-count ${MEMBER_COUNT}
+	@CCF_PLATFORM=${CCF_PLATFORM} ./scripts/submit_constitution.sh --network-url "${KMS_URL}" --certificate-dir "${KEYS_DIR}" --custom-constitution ./$(BUILD_TAG)/governance/constitution/actions/kms.js --member-count ${MEMBER_COUNT}
 
 get-service-cert: # Get the mCCF service cert
 	@echo -e "\e[34m$@\e[0m" || true
@@ -198,8 +219,8 @@ constitution-set:
 	@WORKSPACE=${KMS_WORKSPACE} \
 	KMS_URL=${KMS_URL} \
 	./scripts/kms/constitution_set.sh \
-		--resolve ./governance/constitution/resolve/auto_accept.js \
-		--actions ./governance/constitution/actions/kms.js
+		--resolve ./$(BUILD_TAG)/governance/constitution/resolve/auto_accept.js \
+		--actions ./$(BUILD_TAG)/governance/constitution/actions/kms.js
 
 release-policy-set:
 	@WORKSPACE=${KMS_WORKSPACE} \

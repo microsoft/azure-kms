@@ -80,7 +80,7 @@ sudo chmod +r ${certificate_dir}/*.pem
 export SERVER=${server}
 export CERTS_FOLDER=${certificate_dir}
 export INTERACTIVE_MODE=${interactive}
-npm run e2e-test
+make e2e-test
 
 printf "\n\n🏁 Test Completed...\n"
 exit 0

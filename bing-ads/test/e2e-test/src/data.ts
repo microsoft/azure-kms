@@ -9,30 +9,30 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // reading CSV file as text (CSV parsing is done by the application)
 const member0csvData = fs.readFileSync(
-  path.resolve(__dirname, "../../data-samples/member0_data.csv"),
+  path.resolve(__dirname, "../../../../test/data-samples/member0_data.csv"),
   "utf8",
 );
 const csvFileWrongSchema = fs.readFileSync(
-  path.resolve(__dirname, "../../data-samples/member0_wrong_schema.csv"),
+  path.resolve(__dirname, "../../../../test/data-samples/member0_wrong_schema.csv"),
   "utf8",
 );
 
 // JSON Files
 const member0jsonData = JSON.parse(
   fs.readFileSync(
-    path.resolve(__dirname, "../../data-samples/member0_data_pt2.json"),
+    path.resolve(__dirname, "../../../../test/data-samples/member0_data_pt2.json"),
     "utf8",
   ),
 );
 const member1jsonData = JSON.parse(
   fs.readFileSync(
-    path.resolve(__dirname, "../../data-samples/member1_data.json"),
+    path.resolve(__dirname, "../../../../test/data-samples/member1_data.json"),
     "utf8",
   ),
 );
 const member2jsonData = JSON.parse(
   fs.readFileSync(
-    path.resolve(__dirname, "../../data-samples/member2_data.json"),
+    path.resolve(__dirname, "../../../../test/data-samples/member2_data.json"),
     "utf8",
   ),
 );

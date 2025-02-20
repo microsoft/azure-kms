@@ -6,8 +6,9 @@
 constitution-set() {
   set -e
 
+  BUILD_TAG=$(cat .build_tag)
   REPO_ROOT="$(realpath "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../..")"
-  BASE_DIR=$REPO_ROOT/governance/constitution
+  BASE_DIR=$REPO_ROOT/$BUILD_TAG/governance/constitution
   OUTPUT="$WORKSPACE/proposals/constitution.js"
   declare -A constitution_files=(
     [actions]="$BASE_DIR/actions/default.js"

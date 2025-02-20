@@ -2,7 +2,7 @@
   "endpoints": {
     "/keyReleasePolicy": {
       "get": {
-        "js_module": "endpoints/keyReleasePolicyEndpoint.js",
+        "js_module": "conf-ai/endpoints/keyReleasePolicyEndpoint.js",
         "js_function": "keyReleasePolicy",
         "forwarding_required": "sometimes",
         "authn_policies": ["member_cert", "jwt"],
@@ -24,7 +24,7 @@
     },
     "/settingsPolicy": {
       "get": {
-        "js_module": "endpoints/settingsPolicyEndpoint.js",
+        "js_module": "conf-ai/endpoints/settingsPolicyEndpoint.js",
         "js_function": "settingsPolicy",
         "forwarding_required": "sometimes",
         "authn_policies": ["member_cert", "jwt"],
@@ -198,7 +198,7 @@
     },
     "/auth": {
       "get": {
-        "js_module": "endpoints/kms.js",
+        "js_module": "conf-ai/endpoints/kms.js",
         "js_function": "auth",
         "forwarding_required": "never",
         "authn_policies": ["user_cert", "member_cert", "jwt"],
@@ -214,7 +214,7 @@
     },
     "/heartbeat": {
       "get": {
-        "js_module": "endpoints/kms.js",
+        "js_module": "conf-ai/endpoints/kms.js",
         "js_function": "heartbeat",
         "forwarding_required": "never",
         "authn_policies": [],
